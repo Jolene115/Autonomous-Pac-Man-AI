@@ -1,0 +1,12 @@
+Training Model
+--------------------
+{'training_size': 23000, 'testing_size': 5000, 'use_validation': True, 'model_save_path': 'models/q3_mlp.model', 'model_args': 'model_type=mlp,hidden=32,mlp_lr=0.01,mlp_epochs=100,mlp_l2=1e-4,mlp_batch=128,verbose=True'}
+{'training': 23000, 'test': 5000, 'use_validation': True, 'model_save_path': 'models/q3_mlp.model', 'model_args': 'model_type=mlp,hidden=32,mlp_lr=0.01,mlp_epochs=100,mlp_l2=1e-4,mlp_batch=128,verbose=True'}
+22957
+4765
+4305
+Training...
+[Q3] Train acc: 0.3135
+[Q3] Val acc:   0.3093
+Testing...
+0.3140534262485482

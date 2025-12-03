@@ -1,0 +1,12 @@
+Training Model
+--------------------
+{'training_size': 23000, 'testing_size': 5000, 'use_validation': True, 'model_save_path': 'models/q3_hybrid.model', 'model_args': 'model_type=ensemble,tree_use_rescale=False,hidden=32,mlp_lr=0.01,mlp_epochs=100,mlp_l2=0.0001,mlp_batch=128,gate_enable=True,gate_tau_low=0.47,gate_tau_high=0.53,gate_margin=0.20,gate_mlp_conf=0.68,calib_alpha=0.9,veto_penalty=0.35,verbose=True'}
+{'training': 23000, 'test': 5000, 'use_validation': True, 'model_save_path': 'models/q3_hybrid.model', 'model_args': 'model_type=ensemble,tree_use_rescale=False,hidden=32,mlp_lr=0.01,mlp_epochs=100,mlp_l2=0.0001,mlp_batch=128,gate_enable=True,gate_tau_low=0.47,gate_tau_high=0.53,gate_margin=0.20,gate_mlp_conf=0.68,calib_alpha=0.9,veto_penalty=0.35,verbose=True'}
+22957
+4765
+4305
+Training...
+[Q3] Train acc: 0.9651
+[Q3] Val acc:   0.9668
+Testing...
+0.973054587688734

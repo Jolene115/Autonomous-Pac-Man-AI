@@ -1,0 +1,12 @@
+Training Model
+--------------------
+{'training_size': 23000, 'testing_size': 5000, 'use_validation': True, 'model_save_path': 'models/q3_logreg.model', 'model_args': 'model_type=logreg,use_rescale=True,lr=0.2,epochs=40,l2=0.0005,class_weight=balanced,verbose=True'}
+{'training': 23000, 'test': 5000, 'use_validation': True, 'model_save_path': 'models/q3_logreg.model', 'model_args': 'model_type=logreg,use_rescale=True,lr=0.2,epochs=40,l2=0.0005,class_weight=balanced,verbose=True'}
+22957
+4765
+4305
+Training...
+[Q3] Train acc: 0.8900
+[Q3] Val acc:   0.8900
+Testing...
+0.8915214866434379
