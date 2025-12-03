@@ -1,0 +1,106 @@
+# Q-Learning Agent (Q2)
+
+This folder contains the **Q-Learning agent** implementation used in Assignment 3 (Q2).  
+It includes the Q-table learning algorithm, compact state encoding, training commands, and evaluation notes.
+
+---
+
+# 1. Summary
+
+### ✔ Algorithm  
+- **Tabular Q-learning**  
+- **Epsilon-greedy** exploration  
+- **Learning rate (α)** decay optional  
+- **Discount factor (γ)** tuned through experiments  
+- Trains on full episodes, updates per transition
+
+### ✔ Final Hyperparameters (Chosen Through Search)
+From experiments:
+epsilon = 0.12
+alpha   = 0.22
+gamma   = 0.90   # chosen for stability on evaluation server
+
+These values gave high performance across small, medium, and large layouts under the assignment’s restricted training budgets.
+
+---
+
+# 2. State Representation
+
+A compact state encoding was used to keep the table small and converge quickly.
+
+It includes:
+- Pac-Man position (tile coordinates)
+- Ghost danger flag (within Manhattan distance 2)
+- Food mask (4-bit)
+- Wall mask (4-bit)
+
+A detailed explanation is provided in:  
+📄 **`state_encoding.md`**
+
+---
+
+# 3. File Overview
+
+| File | Purpose |
+|------|---------|
+| `q2_agent.py` | Main Q-learning agent implementation |
+| `state_encoding.md` | Explanation of the encoding and reasoning |
+| `README.md` | This file |
+
+---
+
+# 4. Training & Evaluation Commands
+
+### **Run on a small Q-learning layout**
+```bash
+python pacman.py -l layouts/QL_smallMaze_1.lay -p Q2Agent \
+  -a epsilon=0.12,alpha=0.22,gamma=0.90 \
+  -x 1000 -n 1040
+
+python pacman.py -l layouts/QL_mediumMaze_2.lay -p Q2Agent \
+  -x 2000 -n 2040 \
+  -a epsilon=0.12,alpha=0.22,gamma=0.90
+
+python pacman.py -l layouts/QL_largeMaze_3.lay -p Q2Agent \
+  -x 4000 -n 4040 \
+  -a epsilon=0.12,alpha=0.22,gamma=0.90
+
+Where:
+	•	-x K = number of training episodes
+	•	-n N = total episodes (training + evaluation)
+	•	This follows the assignment’s RL training protocol.
+
+
+### How Q-learning Updates Work
+
+The agent updates the Q-table using:
+
+[
+Q(s, a) ← Q(s, a) + \alpha \big[r + \gamma \max_{a’} Q(s’, a’) - Q(s, a)\big]
+]
+	•	Updates occur after each action.
+	•	Table is indexed by:
+(pacman_x, pacman_y, ghost_flag, food_mask, wall_mask).
+
+### Strengths of This Approach
+
+✔ Fast convergence
+Compact state = faster learning with limited training episodes.
+
+✔ Robust behaviour
+Generalises across layouts due to relative, not absolute, features.
+
+✔ Reliable on evaluation server
+Selected hyperparameters minimise variance from server randomness.
+
+
+### Limitations
+	•	No long-range ghost lookahead → sometimes overeager chasing food in open areas.
+	•	No capsule awareness.
+	•	Purely reactive (no planning/rollouts).
+
+These were intentional to stay within the assignment constraints and keep table size small.
+
+### Reproducibility
+
+All hyperparameters, training instructions, and experimental results appear in the main project report (docs/report.pdf) and are reproducible with the commands provided above.
