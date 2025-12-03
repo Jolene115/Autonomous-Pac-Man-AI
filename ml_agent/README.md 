@@ -1,0 +1,103 @@
+# Machine Learning Agent (Q3) — Hybrid Ensemble Model
+
+This folder contains the **hybrid supervised learning agent** used in Assignment 3 (Q3).  
+The agent predicts the next best action for Pac-Man by evaluating successor states and consulting a trained model that combines:
+- **Decision Tree (depth = 8)**
+- **Multi-Layer Perceptron (hidden = 32)**
+- **Logistic Regression fallback**
+- **Uncertainty-based gating**
+- **Danger-aware sample weighting**
+- **Safety veto rules**
+
+This README explains:
+1. How the model works  
+2. How to train a new `q3_hybrid_final.model`  
+3. How to run Pac-Man using the trained model  
+4. How to customise hyperparameters  
+
+---
+
+# 1. Overview of the Q3 Model
+
+The Q3 model is implemented in **`q3Model.py`**.  
+It follows this pipeline:
+
+### **Step 1 — Feature Extraction**
+Each legal Pac-Man action creates a "successor state".  
+Features include:
+- Relative ghost positions  
+- Local food / wall patterns  
+- Distances to food clusters  
+- Action feasibility  
+- Risk metrics (ghost proximity, dead-end risk, etc.)
+
+### **Step 2 — Ensemble Predictions**
+Each model produces a probability for “good move” vs “bad move”:
+- Decision Tree → fast and interpretable  
+- MLP → deeper scoring of state quality  
+- Logistic Regression → linear fallback on uncertain states  
+
+### **Step 3 — Gating**
+The Tree is used first:
+- If Tree confidence > upper threshold → accept Tree prediction  
+- If Tree confidence < lower threshold → fallback to MLP  
+- Otherwise → combine weighted outputs  
+
+### **Step 4 — Safety Veto**
+If any action leads to a high-danger state:
+- The model can override predictions  
+- Prevents walking into ghosts  
+- Danger is measured using custom weighting in training and inference
+
+---
+
+# 2. Training a New `q3_hybrid_final.model`
+
+Training happens through **`trainModel.py`**.
+
+You can train a brand-new model using:
+
+```bash
+python trainModel.py \
+    -t 23000 \
+    -s 5000 \
+    -v \
+    -m models/q3_hybrid_final.model \
+    -a model_type=ensemble,hidden=32,mlp_lr=0.01,mlp_epochs=100,mlp_l2=1e-4,gate_enable=True,gate_tau_low=0.47,gate_tau_high=0.53,veto_penalty=0.35
+
+**Explanation of flags**
+Flag,Meaning
+-t 23000,"Sets the number of training samples (e.g., 23,000 samples)."
+-s 5000,"Sets the number of test samples (e.g., 5,000 samples)."
+-v,Enables a validation split (a portion of the training data is held back for model tuning during training).
+-m file,Specifies the file path/name where the trained model should be saved.
+"-a key=value,...","Allows passing advanced ML hyperparameters as a comma-separated list of key-value pairs (e.g., learning rate, batch size, regularization strength)."
+
+After training finishes, the new model is saved as:
+ml_agent/models/q3_hybrid_final.model
+
+To run the trained model in the game:
+python pacman.py \
+    -l layouts/ML_mediumClassic1.lay \
+    -p Q3Agent \
+    -a model_path=models/q3_hybrid_final.model
+
+The Q3Agent:
+	•	Loads your model
+	•	Generates successor features for each legal action
+	•	Uses the ensemble to pick the best move
+
+
+Thus, I have these values that gave us the final best performance:
+model_type     = ensemble
+hidden         = 32
+mlp_lr         = 0.01
+mlp_epochs     = 100
+mlp_l2         = 1e-4
+gate_enable    = True
+gate_tau_low   = 0.47
+gate_tau_high  = 0.53
+veto_penalty   = 0.35
+
+Validation accuracy ≈ 0.9668
+Test accuracy ≈ 0.973
